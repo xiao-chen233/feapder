@@ -30,20 +30,21 @@ class InterceptResponse:
 
 class WebDriver:
     def __init__(
-        self,
-        load_images=True,
-        user_agent=None,
-        proxy=None,
-        headless=False,
-        driver_type=None,
-        timeout=16,
-        window_size=(1024, 800),
-        executable_path=None,
-        custom_argument=None,
-        download_path=None,
-        auto_install_driver=True,
-        use_stealth_js=True,
-        **kwargs,
+            self,
+            load_images=True,
+            user_agent=None,
+            proxy=None,
+            headless=False,
+            driver_type=None,
+            timeout=16,
+            window_size=(1024, 800),
+            executable_path=None,
+            custom_argument=None,
+            download_path=None,
+            auto_install_driver=True,
+            use_stealth_js=True,
+            command_executor=None,
+            **kwargs,
     ):
         """
         webdirver 封装，支持chrome、phantomjs 和 firefox
@@ -74,6 +75,7 @@ class WebDriver:
         self._auto_install_driver = auto_install_driver
         self._use_stealth_js = use_stealth_js
         self._driver_type = driver_type
+        self._command_executor = command_executor
         self._kwargs = kwargs
 
     @abc.abstractmethod

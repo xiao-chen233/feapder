@@ -255,23 +255,28 @@ class SeleniumDriver(WebDriver, RemoteWebDriver):
                 chrome_options.add_argument(arg)
 
         kwargs = self.filter_kwargs(self._kwargs, self.__CHROME_ATTRS__)
-        if Service is None:
-            if self._executable_path:
-                kwargs.update(executable_path=self._executable_path)
-            elif self._auto_install_driver:
-                kwargs.update(executable_path=ChromeDriverManager().install())
-        else:
-            if self._executable_path:
-                kwargs.update(service=Service(self._executable_path))
-            elif self._auto_install_driver:
-                kwargs.update(service=Service(ChromeDriverManager().install()))
 
-        driver = webdriver.Chrome(options=chrome_options, **kwargs)
+        if self._command_executor:
+            driver = webdriver.Remote(command_executor=self._command_executor, options=chrome_options, **kwargs)
+            print("远程地址:", self._command_executor)
+        else:
+            if Service is None:
+                if self._executable_path:
+                    kwargs.update(executable_path=self._executable_path)
+                elif self._auto_install_driver:
+                    kwargs.update(executable_path=ChromeDriverManager().install())
+            else:
+                if self._executable_path:
+                    kwargs.update(service=Service(self._executable_path))
+                elif self._auto_install_driver:
+                    kwargs.update(service=Service(ChromeDriverManager().install()))
+
+            driver = webdriver.Chrome(options=chrome_options, **kwargs)
 
         # 隐藏浏览器特征
         if self._use_stealth_js:
             with open(
-                os.path.join(os.path.dirname(__file__), "../js/stealth.min.js")
+                    os.path.join(os.path.dirname(__file__), "../js/stealth.min.js")
             ) as f:
                 js = f.read()
                 driver.execute_cdp_cmd(
@@ -281,7 +286,7 @@ class SeleniumDriver(WebDriver, RemoteWebDriver):
         if self._xhr_url_regexes:
             assert isinstance(self._xhr_url_regexes, list)
             with open(
-                os.path.join(os.path.dirname(__file__), "../js/intercept.js")
+                    os.path.join(os.path.dirname(__file__), "../js/intercept.js")
             ) as f:
                 js = f.read()
             driver.execute_cdp_cmd(
@@ -375,7 +380,7 @@ class SeleniumDriver(WebDriver, RemoteWebDriver):
         # 隐藏浏览器特征
         if self._use_stealth_js:
             with open(
-                os.path.join(os.path.dirname(__file__), "../js/stealth.min.js")
+                    os.path.join(os.path.dirname(__file__), "../js/stealth.min.js")
             ) as f:
                 js = f.read()
                 driver.execute_cdp_cmd(
@@ -385,7 +390,7 @@ class SeleniumDriver(WebDriver, RemoteWebDriver):
         if self._xhr_url_regexes:
             assert isinstance(self._xhr_url_regexes, list)
             with open(
-                os.path.join(os.path.dirname(__file__), "../js/intercept.js")
+                    os.path.join(os.path.dirname(__file__), "../js/intercept.js")
             ) as f:
                 js = f.read()
             driver.execute_cdp_cmd(
